@@ -15,7 +15,12 @@
 #       
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#----- Function to calculate RMS Power
+#----- Load required libraries
+library(data.table)
+library(seewave)
+library(tuneR)
+library(tools)
+
 rmsPower <- function(dataDir, 
                      segmentDuration, 
                      fileType,
@@ -23,54 +28,72 @@ rmsPower <- function(dataDir,
                      bwFilterFrom, 
                      bwFilterTo,
                      outputDir) {
+
   #----- Check raw data dir exists
   if (!dir.exists(dataDir)) {
-    stop("Data directory does not exist!")
+    stop("ERROR: Data directory does not exist!")
   } else {
-    message("Raw data directory located!")
+    message("Locating data dir...")
   }
   
   #----- Check output directory exists, if not, create
   if (!dir.exists(outputDir)) {
+    message(paste0("Creating output directory: ", outputDir))
     dir.create(outputDir)
   } else {
-    message("Output directory located!")
+    message("Output directory already exists.")
   }
   
-  #----- Check that file type is valid option
-  #if (fileType != "WAV" | fileType != "wav") {
-  #  stop("fileType must be one of WAV or wav!")
-  #}
-  
   #----- List files
-  message("Loading in data files...")
   dataFiles <- list.files(dataDir,
                           pattern = fileType,
                           full.names = TRUE,
                           recursive = TRUE)
   
-  #----- Initialize progress bar for file processing
-  numFiles <- length(dataFiles)
-  pb <- txtProgressBar(min = 0, max = numFiles, style = 3)
+  #----- Print logging
+  message("#------------------------------------------#")
+  message(paste0("Starting rmsPower with ", length(dataDir), " files."))
+  message("#------------------------------------------#")
+  
+  #----- Precompute total number of segments
+  totalSegments <- 0
+  for (file in dataFiles) {
+    waveHeader <- tryCatch({
+      tuneR::readWave(file, header = TRUE)
+    }, error = function(e) {
+      warning(paste("Skipping header read error:", file))
+      return(NULL)
+    })
+    if (is.null(waveHeader)) next
+    dur <- waveHeader$samples / waveHeader$sample.rate
+    totalSegments <- totalSegments + floor(dur / segmentDuration)
+  }
+  
+  if (totalSegments == 0) {
+    message("No valid segments found across files.")
+    return(invisible(NULL))
+  }
+  
+  #----- Initialize progress bar for total segments
+  pb <- txtProgressBar(min = 0, max = totalSegments, style = 3)
+  progress <- 0
   
   #----- Iterate through the files
   for (f in seq_along(dataFiles)) {
     i <- dataFiles[f]
     message(paste0("Processing", i))
     
-    #----- Drop extension
-    #short_name <- tools::file_path_sans_ext(i)
+    #== Generate short name
     short_name <- tools::file_path_sans_ext(basename(i))
     
-    #----- Check if output file already exists
+    #== Specify output file name
     out_file <- file.path(outputDir, paste0(short_name, "_RMSPower_1Second.csv"))
     if (file.exists(out_file)) {
       message(paste("File already exists. Skipping:", out_file))
-      setTxtProgressBar(pb, f)
       next
     }
     
-    #----- Read in the file
+    #== Check that file does not throw bin error (most likely empty)
     raw.wav <- tryCatch({
       tuneR::readWave(i)
     }, error = function(e) {
@@ -79,72 +102,53 @@ rmsPower <- function(dataDir,
       } else {
         warning(paste("Skipping file due to unknown error:", i, "\nError:", e$message))
       }
-      setTxtProgressBar(pb, f)
-      NULL  # Return NULL on error
+      return(NULL)
     })
     
-    # Check if readWave failed
     if (is.null(raw.wav)) {
-      next  # Now safe to use next here (inside loop)
+      next
     }
     
-
-    #----- Apply band-pass filter around echolocation range
+    #== Filter the WAV file
     wav <- bwfilter(raw.wav, 
-                    f = samplingRate, # sampling rate in Hz
-                    from = bwFilterFrom, # lower limit of band-pass filter in Hz
-                    to = bwFilterTo, # upper limit of band-pass filter in Hz
-                    bandpass = T,#indicates whether band-pass (T) or band-stop filter (Null)
+                    f = samplingRate,
+                    from = bwFilterFrom,
+                    to = bwFilterTo,
+                    bandpass = T,
                     output = "Wave") 
     
-    #----- Number of measurements that will be taken for each audio file
+    #== Calculate number of segments
     num_segments <- floor(duration(wav) / segmentDuration) 
     message(paste0("Number of segments: ", num_segments))
     
-    #----- Preallocate results vector
+    #== Create a vector of length number of segments
     rmsenergy <- numeric(num_segments) 
     
-    #----- Loop through all segments
+    #== Iterate through the segments
     for (j in 1:num_segments) {
-      #----- Start of each measurement
+      
+      #== Calculate metrics
       start_time <- (j - 1)*segmentDuration
-      
-      #----- End of each measurement
       end_time <- j * segmentDuration
-      
-      #----- Calculating the measurement length and location with audio file
       segment <- wav[round(start_time*samplingRate):round(end_time*samplingRate)]
-      
-      #----- Divide segments by 32768 to get a value in the -1 to 1 range
       MLV <- (segment@left)/32768
-      
-      #----- Take rms measurement of converted -1 to 1 segments
       rms_energy <- rms(MLV)
-      
-      #----- Convert to decibels and make relative to loudest possible signal (1)
-      rel_rmsenergy <- 10*log((rms_energy/1),base=10)
-      
-      # Save results
+      rel_rmsenergy <- 10*log((rms_energy/1), base=10)
       rmsenergy[j] <- rel_rmsenergy
+      
+      #== Update progress bar per segment
+      progress <- progress + 1
+      setTxtProgressBar(pb, progress)
     }
     
-    write.csv(rmsenergy, out_file)
+    #== Save results
+    data.table::fwrite(data.table::data.table(rmsenergy), out_file)
     message(paste0("Output saved to ", outputDir))
-    
-    # Update progress bar after each file
-    setTxtProgressBar(pb, f)
-    
   }
   
+  #----- Close progress bar
   close(pb)
-  
-  
-  
-
-  
 }
 
 
 
-
-#-----
