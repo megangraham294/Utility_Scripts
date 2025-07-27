@@ -1,6 +1,15 @@
 # Utility Scripts
 Helpful scripts for the processing of root-mean-squared acoustic energy values from bat call WAV files.
 
+## Accessing these functions
+To access these functions, clone the git repository from your terminal within a directory of your choosing. 
+
+```shell
+git clone https://github.com/megangraham294/Utility_Scripts/
+```
+
+Once cloned, you should see a folder called `Utility_Scripts`. You can now use `source()` at the top of your R script and provide the path to the `BatFunctions.R` file within the `Utility_Scripts` directory. 
+
 ## Table of Contents
 -  [rmsPower](#rmsPower)
 
