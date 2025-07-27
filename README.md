@@ -1,5 +1,10 @@
+
+
+
 # Utility Scripts
 Helpful scripts for the processing of root-mean-squared acoustic energy values from bat call WAV files.
+
+![R version](https://img.shields.io/badge/R-4.5.1-6d6d6d?style=for-the-badge&logo=r&logoColor=blue)
 
 ## Accessing these functions
 To access these functions, clone the git repository from your terminal within a directory of your choosing. 
@@ -11,11 +16,10 @@ git clone https://github.com/megangraham294/Utility_Scripts/
 Once cloned, you should see a folder called `Utility_Scripts`. You can now use `source()` at the top of your R script and provide the path to the `BatFunctions.R` file within the `Utility_Scripts` directory. 
 
 ## Table of Contents
--  [rmsPower](#rmsPower)
-
+-  [rmsPower](#rmspower)
 
 ### rmsPower
-A function to calculate root-mean-squared acoustic energy values from bat call WAV files. Simply source the function script in your R code. This function requires the following R libraries
+The `rmsPower()` function processes a directory of WAV audio files, splits each recording into fixed-length time segments, and computes the Root Mean Square (RMS) energy for each segment. This is commonly used in bioacoustics (e.g., bat echolocation analysis) to quantify signal power over time. This function currently does not support multi-threading. The following libraries are required to run this function:
 
 1. data.table 
 2. seewave
