@@ -1,10 +1,11 @@
 
-
-
 # Utility Scripts
 Helpful scripts for the processing of root-mean-squared acoustic energy values from bat call WAV files.
 
 ![R version](https://img.shields.io/badge/R-4.5.1-6d6d6d?style=for-the-badge&logo=r&logoColor=blue) ![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg?style=for-the-badge&logo=python&logoColor=blue)
+
+**Author:** [Mike Martinez](https://github.com/mikemartinez99?tab=repositories)
+
 ## Accessing R functions
 To access these functions, clone the git repository from your terminal within a directory of your choosing. 
 
@@ -66,11 +67,11 @@ rmsPower(dataDir = ".",
 ## Batch Timestamp Editing
 If .WAV files have incorrect date/time-stamp information, you can edit the filenames to reflect different time-zones with `edit_dates.py`
 
-This script takes the following arguments/flags:
+This script takes the following arguments/flags. You can either use the --path/--hours flags or the -p/-h flags, however both arguments need to be present.
 
 |Argument|Value|
 |--------|-----|
-|`--path (-p)`|String. Path to data directory.|
+|`--path` (-p)|String. Path to data directory.|
 |`--hours` (-h)|Numeric. Number of hours to edit by (-# subtracts and +# adds)|
 
 **Future functionality**
