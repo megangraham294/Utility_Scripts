@@ -17,7 +17,7 @@ Once cloned, you should see a folder called `Utility_Scripts`. You can now use `
 
 ## Table of Contents
 -  [rmsPower](#rmspower)
--  [Batch Date Editing](#batch-date-editing)
+-  [Batch timestamp Editing](#batch-timestamp-editing)
 
 ### rmsPower
 The `rmsPower()` function processes a directory of WAV audio files, splits each recording into fixed-length time segments, and computes the Root Mean Square (RMS) energy for each segment. This is commonly used in bioacoustics (e.g., bat echolocation analysis) to quantify signal power over time. This function currently does not support multi-threading. The following libraries are required to run this function:
@@ -64,7 +64,7 @@ rmsPower(dataDir = ".",
          outputDir = "/Users/megangraham/Desktop/")
 ```
 
-## Batch Date Editing
+## Batch Timestamp Editing
 If .WAV files have incorrect date/time-stamp information, you can edit the filenames to reflect different time-zones with `edit_dates.py`
 
 **Example Usage**
