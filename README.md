@@ -4,8 +4,7 @@
 # Utility Scripts
 Helpful scripts for the processing of root-mean-squared acoustic energy values from bat call WAV files.
 
-![R version](https://img.shields.io/badge/R-4.5.1-6d6d6d?style=for-the-badge&logo=r&logoColor=blue)
-
+![R version](https://img.shields.io/badge/R-4.5.1-6d6d6d?style=for-the-badge&logo=r&logoColor=blue) ![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg?style=for-the-badge&logo=python&logoColor=blue)
 ## Accessing R functions
 To access these functions, clone the git repository from your terminal within a directory of your choosing. 
 
