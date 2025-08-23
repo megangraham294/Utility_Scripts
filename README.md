@@ -66,13 +66,30 @@ rmsPower(dataDir = ".",
 ## Batch Timestamp Editing
 If .WAV files have incorrect date/time-stamp information, you can edit the filenames to reflect different time-zones with `edit_dates.py`
 
+This script takes the following arguments/flags:
+
+|Argument|Value|
+|--------|-----|
+|`--path (-p)`|String. Path to data directory.|
+|`--hours` (-h)|Numeric. Number of hours to edit by (-# subtracts and +# adds)|
+
+**Future functionality**
+- Output file that maps original file names to new timestamp names
+
+
+
 **Example Usage**
 
 ```python
 #----- Subtract 5 hours from each file's timestamp in file name
-python3 renamegmt.py \
+python3 edit_timestamp.py \
          --path /Volumes/BatDrive/SomeFolder/ \
          --hours -5
+
+#----- Add 5 hours from each file's timestamp in file name
+python3 edit_timestamp.py \
+         --path /Volumes/BatDrive/SomeFolder/ \
+         --hours +5
 ```
 
 
