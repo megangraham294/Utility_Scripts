@@ -5,11 +5,11 @@
 library(tidyverse)
 
 #-----Point to folders with subfolders
-folder <- "/Volumes/NHBat/PAB_NHBat/Analysis/SnakeBatOutputs/PAB_WP_052825_AM77_M_LGE_SnakeBat/RMS_Power/PAB_WP_052825_AM77_M_LGE.RMS_Power"
+parent_dir <- "/Volumes/NHBat/PAB_NHBat/Analysis/SnakeBatOutputs/PAB_WP_052825_AM77_M_LGE_SnakeBat/RMS_Power/PAB_WP_052825_AM77_M_LGE.RMS_Power"
 
 
 #Get full file paths
-all_subfolders <- list.dirs(folder, recursive = TRUE)
+all_subfolders <- list.dirs(parent_dir, recursive = TRUE)
 
 
 #create output folder
@@ -22,3 +22,4 @@ dir.create(output_folder, showWarnings = FALSE)
 #then find the AdjustedValues column and add 6.3 to all non-zero values (if/else =/= 0)
 #go into the next csv and repeat in all csvs in folder 
 #when all csvs in that folder are complete, output a daily summary file with the new values in AdjustedValues summed across all csvs
+
