@@ -65,6 +65,7 @@ for (file in listoffiles) {
     warning(paste("No AdjustedValue Column:", file))
   }
     
+  
    # new_col <- apply(mydata, 1, gainAdj)
   #  cbind(mydata, gainAdj = new_col)
   outfile <- paste0(output_folder, paste0("GainAdj", basename(file)))
@@ -86,3 +87,36 @@ for (file in listoffiles) {
 #}
 #new_col <- apply(mydata, 1, gainAdj)
 #cbind(mydata, gainAdj = new_col)
+
+
+
+# Take 3 
+# 111925
+
+# Set the folder where your CSVs are
+input_folder <- ("/Volumes/NHBat/PAB_NHBat/Analysis/SnakeBatOutputs/PAB_BB_2025_SnakeBat/Total_RMSE/PAB_BB_2025_Total_RMSE_East/PAB_BB_052925_AM68_ML_LGE_East.RMS_Power")
+output_folder <- "/Volumes/NHBat/PAB_NHBat/Analysis/GainAdjusted"
+
+
+# Create output folder if it doesn't exist
+dir.create(output_folder, showWarnings = FALSE)
+
+# List all CSV files in that folder
+listoffiles <- list.files(input_folder,full.names = TRUE)
+
+
+# Loop through each CSV file
+for (file in listoffiles) {
+  mydata <- read.csv(file)
+  mydata$AdjustedValue <- mydata$AdjustedValue + 6.3
+  mydata$rmsEnergy <- mydata$rmsEnergy + 6.3
+  mydata$total_raw_rmse <- sum(mydata$rmsEnergy)
+  mydata$total_adj_rmse <- sum(mydata$AdjustedValue)
+
+  
+  outfile <- paste0(output_folder, paste0(basename(file)))
+  
+  write.csv(mydata, file = outfile, row.names = FALSE)
+}
+
+
