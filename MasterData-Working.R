@@ -8,8 +8,8 @@ library(lubridate)
 #----------------------------------------#
 
 #----- Define paths (f1 scrambled)
-folder1 <- "/Users/mike/Desktop/MEG_TEST/A/"
-folder2 <- "/Users/mike/Desktop/MEG_TEST/B/"
+folder1 <- "/Volumes/NHBat/PAB_NHBat/Analysis/Master_Analysis/01_GainAdj/PAB_BB_052925_AM68_M_GainAdj/Total_RMSE/PAB_BB_052925_AM68_ML_LGE.RMS_Power"
+folder2 <- "/Volumes/NHBat/PAB_NHBat/Analysis/Master_Analysis/00_Non_GainAdj/00_PAB_BB_2025_SnakeBat/Total_RMSE/PAB_BB_2025_Total_RMSE_East/PAB_BB_082025_AM68_M_LGE_East.RMS_Power"
 
 #----- Get full file paths
 listoffiles1 <- list.files(folder1, full.names = TRUE)
@@ -19,7 +19,7 @@ listoffiles2 <- list.files(folder2, full.names = TRUE)
 allfiles <- c(listoffiles1, listoffiles2)
 
 #----- Create output folder
-output_folder <- "/Users/mike/Desktop/MEG_TEST/C/"
+output_folder <- "/Volumes/NHBat/PAB_NHBat/Analysis/DailyOutputs/PAB_BB_2025_EastSide_Daily_Outputs_May_Aug/"
 if (!dir.exists(output_folder)) {
   dir.create(output_folder)
 }

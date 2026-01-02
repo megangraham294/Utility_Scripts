@@ -36,6 +36,7 @@ rmsPower <- function(dataDir,
     message("Locating data dir...")
   }
   
+  #-----Add gain offset var
   #----- Check output directory exists, if not, create
   if (!dir.exists(outputDir)) {
     message(paste0("Creating output directory: ", outputDir))
@@ -133,7 +134,8 @@ rmsPower <- function(dataDir,
       segment <- wav[round(start_time*samplingRate):round(end_time*samplingRate)]
       MLV <- (segment@left)/32768
       rms_energy <- rms(MLV)
-      rel_rmsenergy <- 10*log((rms_energy/1), base=10)
+      rel_rmsenergy <- 10*log((rms_energy/1), base=10) #change to 20log
+      #add gain here 
       rmsenergy[j] <- rel_rmsenergy
       
       #== Update progress bar per segment
