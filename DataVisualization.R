@@ -49,8 +49,30 @@ ggplot(fullData, aes(x = Julian, y = total_adj_rmse, color = Site)) +
         strip.background = element_rect("white"),
         legend.position = "none",
         panel.grid.minor = element_blank(), 
-        panel.grid.major = element_blank())
+        panel.grid.major = element_blank(),
+        panel.background = element_rect(fill = "transparent", color = NA),
+        plot.background = element_rect(fill = "transparent", color = NA))
 ggsave("/Volumes/NHBat/PAB_NHBat/Analysis/Plots_2025/Combined_Plot.png", width = 14, height = 8)
+ggsave("/Users/megangraham/Desktop/Combined_Plot.png", width = 14, height = 8)
 
+# Willard graphic
+ggplot(my_data_WP, aes(x = Julian, y = total_adj_rmse, color = "red")) + 
+  theme_bw(base_size = 28.5) +
+  geom_point(size = 2.5, color = "black", shape = 21) + 
+  geom_smooth(method = "gam") +
+  facet_grid(~Site) +
+  labs(x = "Julian Date", 
+       y = "RMS Amplitude (V)",
+       color = "") +
+  theme(strip.text = element_text(face = "bold"),
+        axis.title = element_text(face = "bold"),
+        strip.background = element_rect("white"),
+        legend.position = "none",
+        panel.grid.minor = element_blank(), 
+        panel.grid.major = element_blank(),
+        panel.background = element_rect(fill = "transparent", color = NA),
+        plot.background = element_rect(fill = "transparent", color = NA))
+ggsave("/Volumes/NHBat/PAB_NHBat/Analysis/Plots_2025/Willard_Graphic.png", width = 12, height = 8)
+ggsave("/Users/megangraham/Desktop/Willard_Graphic.png", width = 12, height = 8)
 
   
