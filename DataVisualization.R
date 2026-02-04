@@ -112,6 +112,6 @@ ggplot(my_data_WP, aes(x = Julian, y = total_adj_rmse, color = "red")) +
     panel.grid = element_blank(),
     panel.background = element_rect(fill = "transparent", color = NA),
     plot.background = element_rect(fill = "transparent", color = NA))
-ggsave("/Users/megangraham/Desktop/WP_Graphic.png", width = 10, height = 6)
+ggsave("/Users/megangraham/Desktop/WP_Graphic.png", width = 5, height = 6)
 
 

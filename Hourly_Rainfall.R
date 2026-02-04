@@ -3,9 +3,11 @@ library(jsonlite)
 library(lubridate)
 library(dplyr)
 
-# Portsmouth, NH coordinates
-LATITUDE <- 43.0718
-LONGITUDE <- -70.7626
+output_folder <- "/Volumes/NHBat/PAB_NHBat/PAB_BB_2025"
+
+# site coordinates
+LATITUDE <- 43.11417
+LONGITUDE <- -70.87490
 
 get_sunset_times <- function(lat, lon, year, month) {
   sunset_data <- list()
@@ -78,19 +80,32 @@ calculate_rainfall_after_sunset <- function(rainfall_df, sunset_times) {
   return(bind_rows(results))
 }
 
-# Main execution
-cat("Fetching sunset times for Portsmouth, NH in May 2025...\n")
-sunset_times <- get_sunset_times(LATITUDE, LONGITUDE, 2025, 5)
+months_to_process <- 5:8   # May (5) through August (8)
+all_results <- list()
 
-cat("Fetching hourly rainfall data...\n")
-rainfall_df <- get_hourly_rainfall(LATITUDE, LONGITUDE, 2025, 5)
+for (month in months_to_process) {
+  
+  cat(sprintf("\nFetching sunset times for %d/%d...\n", month, 2025))
+  sunset_times <- get_sunset_times(LATITUDE, LONGITUDE, 2025, month)
+  
+  cat("Fetching hourly rainfall data...\n")
+  rainfall_df <- get_hourly_rainfall(LATITUDE, LONGITUDE, 2025, month)
+  
+  cat("Calculating rainfall totals for sunset to 1.25 hours post-sunset window...\n")
+  results_df <- calculate_rainfall_after_sunset(rainfall_df, sunset_times)
+  
+  # Add month column for tracking
+  results_df$month <- month
+  
+  all_results[[as.character(month)]] <- results_df
+}
 
-cat("Calculating rainfall totals for sunset to 1.25 hours post-sunset window...\n")
-results_df <- calculate_rainfall_after_sunset(rainfall_df, sunset_times)
+final_results_df <- do.call(rbind, all_results)
+
 
 # Save to CSV
-output_file <- "portsmouth_nh_rainfall_may2025.csv"
-write.csv(results_df, output_file, row.names = FALSE)
+output_file <- "Test_PAB_BB_rainfall_2025.csv"
+write.csv(rainfall_df, paste0("/Users/megangraham/Desktop/", output_file), row.names = FALSE)
 
 cat(sprintf("\nData saved to %s\n", output_file))
 cat("\nPreview of results:\n")
