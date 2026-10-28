@@ -3,7 +3,7 @@ library(jsonlite)
 library(lubridate)
 library(dplyr)
 
-output_folder <- "/Volumes/NHBat/PAB_NHBat/PAB_BB_2025"
+output_folder <- "/Users/megangraham/Desktop"
 
 # site coordinates
 LATITUDE <- 43.11417
@@ -36,7 +36,7 @@ get_hourly_rainfall <- function(lat, lon, year, month) {
   days_in_month <- days_in_month(as.Date(start_date))
   end_date <- sprintf("%d-%02d-%02d", year, month, days_in_month)
   
-  url <- "https://api.open-meteo.com/v1/forecast"
+  url <- "https://archive-api.open-meteo.com/v1/archive"
   response <- GET(url, query = list(
     latitude = lat,
     longitude = lon,
@@ -49,12 +49,14 @@ get_hourly_rainfall <- function(lat, lon, year, month) {
   data <- fromJSON(content(response, "text"))
   
   df <- data.frame(
-    datetime = ymd_hms(data$hourly$time),
+    datetime = ymd_hms(data$hourly$time, tz = "America/New_York"),
     precipitation_mm = data$hourly$precipitation
   )
   
   return(df)
 }
+
+rainfall_df <- read.csv("/Users/megangraham/Desktop/rainfall.csv")
 
 calculate_rainfall_after_sunset <- function(rainfall_df, sunset_times) {
   results <- list()
@@ -79,6 +81,13 @@ calculate_rainfall_after_sunset <- function(rainfall_df, sunset_times) {
   
   return(bind_rows(results))
 }
+
+#Testing 
+summary(rainfall_df$datetime)
+head(rainfall_df$datetime, 10)
+tail(rainfall_df$datetime, 10)
+
+print(sunset_times[[1]])
 
 months_to_process <- 5:8   # May (5) through August (8)
 all_results <- list()
@@ -105,7 +114,7 @@ final_results_df <- do.call(rbind, all_results)
 
 # Save to CSV
 output_file <- "Test_PAB_BB_rainfall_2025.csv"
-write.csv(rainfall_df, paste0("/Users/megangraham/Desktop/", output_file), row.names = FALSE)
+write.csv(final_results_df, paste0("/Users/megangraham/Desktop/", output_file), row.names = FALSE)
 
 cat(sprintf("\nData saved to %s\n", output_file))
 cat("\nPreview of results:\n")
